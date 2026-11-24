@@ -1,0 +1,39 @@
+<html>
+	<head>
+		<title>Sistema CRUD</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, width=device-width, user-scalable=no">
+		<link rel="shortcut icon" href="img/favicon.ico">
+		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+		<link rel="stylesheet" href="css/style.css">
+	</head>
+	<body>
+		<div id="modal-loading" class="modal-loader">
+			<img src="img/loader.gif" class="loader" alt="loader" />
+		</div>
+        <div id="conteudo_sob">
+            <div id="conteudo_campos">
+                <input type="text" id="nome" value="" class="zoom box-shadow-hover" placeholder="ex.: Jose Eduardo">
+                <input type="text" id="sobrenome" value="" class="zoom box-shadow-hover" placeholder="ex.: da Silva Sauro">
+                <input type="text" id="documento" value="" class="zoom box-shadow-hover" placeholder="ex.: 999.999.999-99">
+                <input type="date" id="data_nascimento" class="zoom box-shadow-hover" value="">
+            </div>
+            <div id="conteudo_botoes">
+                <div class="div-img btn zoom box-shadow-hover">
+                    <img id="input_preview" style="height: 20px;display:none;">
+                    <label for="input_imagem">IMAGEM</label>
+                    <input type='file' id='input_imagem' name='input_imagem' accept='image/*' onchange="PreVisualizarImagem(null);">
+                </div>
+                <input type="button" id="btnIns" class="btn zoom box-shadow-hover" value="INSERIR NOVO"> 
+                <input type="button" id="btnSel" class="btn zoom box-shadow-hover" value="CONSULTAR"> 
+            </div>
+        </div>
+        <div id="sub_conteudo"
+		<div id="moldura_conteudo">
+			<div id="conteudo" class="box-shadow"></div>
+			<div id="logs"></div>
+       	</div>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+		<script type="text/javascript" src="js/script.js"></script>
+	</body>
+</html>
