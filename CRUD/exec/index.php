@@ -1,5 +1,6 @@
-         <?php
-    header("Content-type: text/html; chartset=utf-8");
+<?php
+    session_start();
+    header("Content-type: text/html; charset=utf-8");
 
 	$GLOBALS["result"] = '';
     $GLOBALS["msg"] = '';
@@ -15,8 +16,39 @@
         $conn = new PDO("mysql:host=$host;port=$port;dbname=$dbname",$user,$pass);
         $GLOBALS["msg"] = '"SUCESSO: Conexão com o Banco de Dados foi realizada com sucesso."';
     } catch (PDOException $err){
-        $GLOBALS["msg"] = '"ERRO: Conecxão com o Banco de Dados não realizada com sucesso. ERRO gerado ' . $err->getMessage() . '"';
+        echo json_encode(["msg" => ["ERRO: Conexão com o Banco de Dados não realizada. " . $err->getMessage()]]);
+        exit;
     }
+
+function LoginDB($conn){
+    $GLOBALS["result"] = '';
+    $user = isset($_REQUEST["user"]) ? trim($_REQUEST["user"]) : '';
+    $pass = isset($_REQUEST["pass"]) ? $_REQUEST["pass"] : '';
+
+    $query = $conn->prepare("SELECT id, nome, senha FROM usuario WHERE usuario = :usuario LIMIT 1");
+    $query->bindValue(':usuario', $user);
+    $query->execute();
+    $row = $query->fetch(PDO::FETCH_ASSOC);
+
+    if ($row && password_verify($pass, $row['senha'])) {
+        session_regenerate_id(true);
+        $_SESSION['usuario_id'] = $row['id'];
+        $_SESSION['usuario_nome'] = $row['nome'];
+        // caminho relativo à página de login (raiz do projeto)
+        $GLOBALS["result"] = '"resultado" : [{"redirect":"CRUD/index.html"}],';
+    } else {
+        if ($GLOBALS["msg"]){
+            $GLOBALS["msg"] .= ",";
+        }
+        $GLOBALS["msg"] .= '"Usuário ou senha inválidos."';
+    }
+}
+
+function LogoutDB(){
+    $_SESSION = [];
+    session_destroy();
+    $GLOBALS["result"] = '"resultado" : [{"redirect":"../index.html"}],';
+}
 
 function ConsultarRegistrosDB($conn){
     $GLOBALS["result"] = '';
@@ -212,25 +244,37 @@ function DeleteRegistroDB($conn){
         $GLOBALS["msg"] .= '"Não foram encontrados registros para consulta."';
     }
 */
-    if ($_REQUEST['type'] == "C"){
+    $type = isset($_REQUEST['type']) ? $_REQUEST['type'] : '';
+
+    if ($type == "LG"){
+        LoginDB($conn);
+    }else
+    if ($type == "LO"){
+        LogoutDB();
+    }else
+    if (!isset($_SESSION['usuario_id'])){
+        // não logado: manda de volta para a tela de login
+        $GLOBALS["result"] = '"resultado" : [{"redirect":"../index.html"}],';
+    }else
+    if ($type == "C"){
 	ConsultarRegistrosDB($conn);
         }else
-    if ($_REQUEST['type'] == "HW"){
+    if ($type == "HW"){
         $GLOBALS["msg"] .= '"HELLO WORLD"' . "<br/>";
     }else
-    if ($_REQUEST['type'] == "I"){
+    if ($type == "I"){
         InserirRegistroDB($conn);
         ConsultarRegistrosDB($conn);
     }else
-    if ($_REQUEST['type'] == "U"){
+    if ($type == "U"){
         AtualizarRegistroDB($conn);
         ConsultarRegistrosDB($conn);
     }else
-    if ($_REQUEST['type'] == "D"){
+    if ($type == "D"){
         DeleteRegistroDB($conn);
         ConsultarRegistrosDB($conn);
     }else
-    if ($_REQUEST['type'] == "DI"){
+    if ($type == "DI"){
         DeletarImagem($conn);
         ConsultarRegistrosDB($conn);
     }

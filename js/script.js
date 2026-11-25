@@ -1,5 +1,5 @@
 function login() {
-    objPessoa = {
+    const objPessoa = {
         user: document.getElementById("usuario").value,
         pass: document.getElementById("senha").value,
         type: 'LG',
@@ -23,7 +23,7 @@ function atualizarUsuario() {
  
 function ajaxReq(valueData, functionAux) {
     $.ajax({
-        url: '../exec/',
+        url: 'CRUD/exec/',
         data: valueData,
         mimeType: 'ISO-8859-1',
         type: 'post',
@@ -57,16 +57,12 @@ function execRecord(obj, functionAux) {
 }
  
 function listRecords(data) {
-    if (data.msg) {
-        let msgAux = "";
-        let obj = data.msg;
-        for (let key in obj) {
-            msgAux += " - " + obj[key] + "<br/>";
-        }
-        console.log(msgAux);
+    const caixa = document.getElementById("mensagem");
+    if (caixa) {
+        caixa.textContent = data.msg ? data.msg.filter(m => !m.startsWith("SUCESSO")).join(" | ") : "";
     }
-    if (data.resultado) {
-        if ( data.resultado[0].value){
+    if (data.resultado && data.resultado.length > 0) {
+        if (data.resultado[0].value) {
             sessionStorage.setItem("value", data.resultado[0].value);
         }
         if (data.resultado[0].redirect) {

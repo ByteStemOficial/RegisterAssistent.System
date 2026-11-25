@@ -5,19 +5,19 @@
       <meta charset="UTF-8" />
       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <link rel="shortcut icon" href="../img/favicon.ico" />
+      <link rel="shortcut icon" href="CRUD/img/favicon.ico" />
       <title>Login</title>
       <link rel="stylesheet" href="css/style.css" />
     </head>
     <body>
       <div id="modal-loading" class="modal-loader">
-        <img src="../img/loader.gif" class="loader" alt="loader" />
+        <img src="CRUD/img/loader.gif" class="loader" alt="loader" />
       </div>
       <div class="page">
         <div class="formLogin">
           <p style="text-align: center">
             <img
-              src="../img/loader.gif"
+              src="CRUD/img/loader.gif"
               style="
                 height: 200px;
                 width: 200px;
@@ -37,7 +37,7 @@
             placeholder="Digite seu usuario"
             autofocus="true"
           />
-          <label for="password">Senha</label>
+          <label for="senha">Senha</label>
           <input
             type="password"
             id="senha"
@@ -45,6 +45,7 @@
             placeholder="Digite sua senha"
           />
           <input type="button" value="Acessar" class="btn" onclick="login()" />
+          <p id="mensagem" style="color: #c00; margin: 10px 0 0"></p>
         </div>
       </div>
       <div id="logs" style="display: none"></div>
