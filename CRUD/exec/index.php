@@ -5,10 +5,10 @@
     $GLOBALS["msg"] = '';
     $conn = null;
 
-    $host = "sql301.infinityfree.com";
-    $user = "if0_42690286";
-    $pass = "fI8VBBaLbUiX";
-    $dbname = "if0_42690286_meubanco";
+    $host = "srv804.hstgr.io";
+    $user = "u286479776_user";
+    $pass = "rXWhqKUYvLwf4Ng";
+    $dbname = "u286479776_RA";
     $port = 3306;
  	
     try{
