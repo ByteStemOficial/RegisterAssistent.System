@@ -111,7 +111,7 @@ function execRecord(obj, functionAux) {
 
 function ajaxReq(valueData, functionAux) {
   $.ajax({
-    url: "../exec/",
+    url: "CRUD/exec/",
     data: valueData,
     dataType: "json",
     mimeType: "ISO-8859-1",
@@ -123,6 +123,7 @@ function ajaxReq(valueData, functionAux) {
       if (functionAux) {
         functionAux(dataOut);
       }
+      sessionStorage.setItem("value", dataOut.value);
     },
     beforeSend: function () {
       $(".modal-loader").css({ display: "flex" });
