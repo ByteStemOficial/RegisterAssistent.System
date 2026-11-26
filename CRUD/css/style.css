@@ -144,6 +144,10 @@ td {
   #moldura_conteudo.log-right #logs {
     flex: 0 0 20%;
   }
+
+  .grid-pessoas {
+    grid-template-columns: 1fr;
+  }
 }
 
 #moldura_conteudo {
@@ -193,4 +197,53 @@ td {
 #moldura_conteudo.log-left #logs,
 #moldura_conteudo.log-right #logs {
   flex: 0 0 25%;
+}
+
+.grid-pessoas {
+  display: grid;
+  grid-template-columns: repeat(10, 220px);
+  gap: 10px;
+  align-items: start;
+}
+
+.card-pessoa {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid #000;
+  border-radius: 0.5em;
+  background-color: #a9a9a9;
+}
+
+.card-pessoa .rotulo {
+  font-weight: bold;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.card-pessoa input[type="text"],
+.card-pessoa input[type="date"] {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.card-pessoa .campo-imagem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.card-pessoa img {
+  width: 100%;
+  max-height: 150px;
+  object-fit: cover;
+  margin: 0;
+}
+
+.card-pessoa .acoes {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
 }
