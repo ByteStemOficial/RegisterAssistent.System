@@ -19,7 +19,7 @@
         echo json_encode(["msg" => ["ERRO: Conexão com o Banco de Dados não realizada. " . $err->getMessage()]]);
         exit;
     }
-
+    $GLOBALS["msg"] .= ',' . json_encode("Versão: " . VersaoGit());
 function LoginDB($conn){
     $GLOBALS["result"] = '';
     $user = isset($_REQUEST["user"]) ? trim($_REQUEST["user"]) : '';
@@ -59,6 +59,41 @@ function LoginDB($conn){
         }
         $GLOBALS["msg"] .= '"Usuário ou senha inválidos."';
     }
+}
+
+function VersaoGit(){
+    $raiz = dirname(__DIR__, 2); // pasta onde está o .git (raiz do projeto)
+
+    // 1) com git disponível: mensagem do último commit + hash + data
+    if (function_exists('shell_exec')) {
+        $out = @shell_exec('cd ' . escapeshellarg($raiz) . ' && git log -1 --format="%s|%h|%cd" --date=format:"%d/%m/%Y %H:%M" 2>&1');
+        if ($out && strpos($out, '|') !== false && stripos($out, 'fatal') === false) {
+            list($msg, $hash, $data) = array_pad(explode('|', trim($out), 3), 3, '');
+            return "$msg (commit $hash, $data)";
+        }
+    }
+
+    // 2) sem git: lê o hash direto da pasta .git
+    $hash = '';
+    $head = @file_get_contents($raiz . '/.git/HEAD');
+    if ($head) {
+        $head = trim($head);
+        if (strpos($head, 'ref: ') === 0) {
+            $ref = substr($head, 5);
+            $arq = $raiz . '/.git/' . $ref;
+            if (is_file($arq)) {
+                $hash = trim(file_get_contents($arq));
+            } else {
+                $packed = @file_get_contents($raiz . '/.git/packed-refs');
+                if ($packed && preg_match('/^([0-9a-f]{40}) ' . preg_quote($ref, '/') . '$/m', $packed, $m)) {
+                    $hash = $m[1];
+                }
+            }
+        } else {
+            $hash = $head;
+        }
+    }
+    return $hash ? 'commit ' . substr($hash, 0, 7) : 'indisponível';
 }
 
 function LogoutDB(){

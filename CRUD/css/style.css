@@ -294,3 +294,7 @@ td {
 .card-pessoa .thumb img[src] ~ .ph {
   display: none;
 }
+
+.card-pessoa .thumb label {
+  padding: 0 !important;
+}
