@@ -131,12 +131,12 @@ function ajaxReq(valueData, functionAux) {
       $(".modal-loader").css({ display: "none" });
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
+      // status 0 = requisição cancelada (ex.: troca de página), não é erro real
+      if (XMLHttpRequest.status === 0) {
+        return;
+      }
       alert(
-        "erro: " +
-          XMLHttpRequest.responseText +
-          " | errorThrown(" +
-          errorThrown +
-          ")",
+        "erro " + XMLHttpRequest.status + ": " + XMLHttpRequest.responseText,
       );
     },
   });
