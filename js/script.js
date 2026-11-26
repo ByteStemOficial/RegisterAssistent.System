@@ -22,7 +22,7 @@ function atualizarUsuario() {
 
 function ajaxReq(valueData, functionAux) {
   $.ajax({
-    url: "exec/",
+    url: "../exec/",
     data: valueData,
     mimeType: "ISO-8859-1",
     type: "post",
