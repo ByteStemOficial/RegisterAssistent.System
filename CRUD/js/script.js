@@ -142,131 +142,96 @@ function ajaxReq(valueData, functionAux) {
   });
 }
 
+function esc(v) {
+  return String(v ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
 function listRecords(data) {
   document.getElementById("conteudo").innerHTML = "";
   if (data.msg) {
     let msgAux = "";
-    let obj = data.msg;
-    for (let key in obj) {
-      msgAux += " - " + obj[key] + "<br/>";
+    for (let key in data.msg) {
+      msgAux += " - " + data.msg[key] + "<br/>";
     }
     document.getElementById("logs").innerHTML =
       msgAux + document.getElementById("logs").innerHTML;
   }
-  if (data.resultado) {
+  if (data.resultado && data.resultado.length > 0) {
     if (data.resultado[0].redirect) {
       window.location.replace(data.resultado[0].redirect);
-    } else {
-      let obj = data.resultado;
-      let contentTbody = "<tbody>";
-      let contentThead = "";
-      let countRecords = 0;
-      for (let key in obj) {
-        countRecords++;
-        objPerson = obj[key];
-        let idPessoa = null;
-        for (let keyInfo in objPerson) {
-          let campoDesabilitado = "";
-          let tipoCampo = "text";
-          if (countRecords == 1) {
-            contentThead += "<th>";
-            contentThead += keyInfo;
-            contentThead += "</th>";
-          }
-          if (keyInfo == "id") {
-            campoDesabilitado = "disabled";
-            idPessoa = objPerson[keyInfo];
-          }
-          if (keyInfo == "data_nascimento") {
-            tipoCampo = "date";
-          }
-          contentTbody += "<td>";
-          if (keyInfo == "imagem") {
-            if (objPerson[keyInfo] != "") {
-              contentTbody += "<div style='text-align:center;'>";
-              contentTbody +=
-                "<img id='" +
-                objPerson["id"] +
-                "_" +
-                keyInfo +
-                "' style='width:20%;' src='" +
-                objPerson[keyInfo] +
-                "'>";
-              contentTbody +=
-                "<input type='button' id='btnDelImg'  style='width:30%;' class='btn zoom box-shadow-hover' value='Excluir' onclick='DeletarImagem(" +
-                idPessoa +
-                ")'>";
-              contentTbody += "</div>";
-            } else {
-              contentTbody += "<div style='text-align:center;'>";
-              contentTbody +=
-                "<img id='" +
-                objPerson["id"] +
-                "_preview' style='width:20%;display:none;' src='" +
-                objPerson[keyInfo] +
-                "'>";
-              contentTbody +=
-                "<label for='" +
-                objPerson["id"] +
-                "_" +
-                keyInfo +
-                "' id='" +
-                objPerson["id"] +
-                "_label' class='btn zoom box-shadow-hover'>Imagem</label>";
-              contentTbody +=
-                "<input type='file' id='" +
-                objPerson["id"] +
-                "_" +
-                keyInfo +
-                "' name='" +
-                objPerson["id"] +
-                "_" +
-                keyInfo +
-                "' accept='image/*' onchange='PreVisualizarImagem(" +
-                objPerson["id"] +
-                ")'>";
-              contentTbody += "</div>";
-            }
-          } else {
-            contentTbody +=
-              "<input type='" +
-              tipoCampo +
-              "' id='" +
-              objPerson["id"] +
-              "_" +
-              keyInfo +
-              "' value='" +
-              objPerson[keyInfo] +
-              "' class='box-shadow-hover' " +
-              campoDesabilitado +
-              ">";
-          }
-          contentTbody += "</td>";
-        }
-        contentTbody += "<td>";
-        contentTbody +=
-          "<input type='button' id='btnUpd' class='btn zoom box-shadow-hover' value='SALVAR' onclick='AtualizarPessoa(" +
-          idPessoa +
-          ")'>";
-        contentTbody +=
-          "<input type='button' id='btnDel' class='btn zoom box-shadow-hover' value='DELETAR' onclick='DeletarPessoa(" +
-          idPessoa +
-          ")'>";
-        contentTbody += "</td>";
-        contentTbody += "</tr>";
-      }
-      contentThead = "<tr>" + contentThead + "<td>Ações</td></tr>";
-      contentTbody += "</tbody>";
-      document.getElementById("conteudo").innerHTML +=
-        "<table><thead>" +
-        contentThead +
-        "</thead>" +
-        contentTbody +
-        "</table>";
+      return;
     }
+    const campos = [
+      ["id", "ID", "text"],
+      ["nome", "Nome", "text"],
+      ["sobrenome", "Sobrenome", "text"],
+      ["documento", "Documento", "text"],
+      ["data_nascimento", "Nascimento", "date"],
+    ];
+    let html = "<div class='grid-pessoas'>";
+    data.resultado.forEach((p) => {
+      const id = p.id;
+      html += "<div class='card-pessoa box-shadow'>";
+      campos.forEach(([chave, rotulo, tipo]) => {
+        const desab = chave === "id" ? "disabled" : "";
+        html += "<span class='rotulo'>" + rotulo + "</span>";
+        html +=
+          "<input type='" +
+          tipo +
+          "' id='" +
+          id +
+          "_" +
+          chave +
+          "' value='" +
+          esc(p[chave]) +
+          "' class='box-shadow-hover' " +
+          desab +
+          ">";
+      });
+      html += "<div class='campo-imagem'>";
+      if (p.imagem) {
+        html += "<img id='" + id + "_imagem' src='" + esc(p.imagem) + "'>";
+        html +=
+          "<input type='button' class='btn zoom box-shadow-hover' value='Excluir imagem' onclick='DeletarImagem(" +
+          id +
+          ")'>";
+      } else {
+        html += "<img id='" + id + "_preview' style='display:none;'>";
+        html +=
+          "<label for='" +
+          id +
+          "_imagem' class='btn zoom box-shadow-hover'>Imagem</label>";
+        html +=
+          "<input type='file' id='" +
+          id +
+          "_imagem' name='" +
+          id +
+          "_imagem' accept='image/*' onchange='PreVisualizarImagem(" +
+          id +
+          ")'>";
+      }
+      html += "</div>";
+      html += "<div class='acoes'>";
+      html +=
+        "<input type='button' class='btn zoom box-shadow-hover' value='SALVAR' onclick='AtualizarPessoa(" +
+        id +
+        ")'>";
+      html +=
+        "<input type='button' class='btn zoom box-shadow-hover' value='DELETAR' onclick='DeletarPessoa(" +
+        id +
+        ")'>";
+      html += "</div>";
+      html += "</div>";
+    });
+    html += "</div>";
+    document.getElementById("conteudo").innerHTML = html;
   }
 }
-
 const selectLog = document.getElementById("posicaoLog");
 const moldura = document.getElementById("moldura_conteudo");
 
