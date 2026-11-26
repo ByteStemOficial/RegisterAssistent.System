@@ -25,6 +25,24 @@ function LoginDB($conn){
     $user = isset($_REQUEST["user"]) ? trim($_REQUEST["user"]) : '';
     $pass = isset($_REQUEST["pass"]) ? $_REQUEST["pass"] : '';
 
+    // cria a tabela automaticamente se ainda não existir
+    $conn->exec("CREATE TABLE IF NOT EXISTS usuario (
+        id      INT AUTO_INCREMENT PRIMARY KEY,
+        nome    VARCHAR(100) NOT NULL,
+        usuario VARCHAR(50)  NOT NULL UNIQUE,
+        senha   VARCHAR(255) NOT NULL
+    )");
+
+    // primeiro acesso: se não existe nenhum usuário, cria este
+    $total = (int)$conn->query("SELECT COUNT(*) FROM usuario")->fetchColumn();
+    if ($total === 0 && $user !== '' && $pass !== '') {
+        $ins = $conn->prepare("INSERT INTO usuario (nome, usuario, senha) VALUES (:nome, :usuario, :senha)");
+        $ins->bindValue(':nome', $user);
+        $ins->bindValue(':usuario', $user);
+        $ins->bindValue(':senha', password_hash($pass, PASSWORD_DEFAULT));
+        $ins->execute();
+    }
+
     $query = $conn->prepare("SELECT id, nome, senha FROM usuario WHERE usuario = :usuario LIMIT 1");
     $query->bindValue(':usuario', $user);
     $query->execute();
@@ -34,7 +52,6 @@ function LoginDB($conn){
         session_regenerate_id(true);
         $_SESSION['usuario_id'] = $row['id'];
         $_SESSION['usuario_nome'] = $row['nome'];
-        // caminho relativo à página de login (raiz do projeto)
         $GLOBALS["result"] = '"resultado" : [{"redirect":"CRUD/index.html"}],';
     } else {
         if ($GLOBALS["msg"]){
@@ -332,3 +349,4 @@ function DeleteRegistroDB($conn){
 
     echo "{" . $GLOBALS["result"] . "}";
  
+    
