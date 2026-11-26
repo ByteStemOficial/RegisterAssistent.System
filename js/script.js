@@ -65,7 +65,9 @@ function listRecords(data) {
   const caixa = document.getElementById("mensagem");
   if (caixa) {
     caixa.textContent = data.msg
-      ? data.msg.filter((m) => !m.startsWith("SUCESSO")).join(" | ")
+      ? data.msg
+          .filter((m) => !m.startsWith("SUCESSO") && !m.startsWith("Versão"))
+          .join(" | ")
       : "";
   }
   if (data.resultado && data.resultado.length > 0) {
