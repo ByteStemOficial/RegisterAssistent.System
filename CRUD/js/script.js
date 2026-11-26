@@ -167,6 +167,7 @@ function listRecords(data) {
       return;
     }
     const campos = [
+      ["id", "ID", "text"],
       ["nome", "Nome", "text"],
       ["sobrenome", "Sobrenome", "text"],
       ["documento", "Documento", "text"],
@@ -176,44 +177,8 @@ function listRecords(data) {
     data.resultado.forEach((p) => {
       const id = p.id;
       html += "<div class='card-pessoa box-shadow'>";
-
-      // topo: imagem à esquerda + número do ID ao lado
-      html += "<div class='topo-card'>";
-      html += "<div class='thumb'>";
-      if (p.imagem) {
-        html +=
-          "<img id='" +
-          id +
-          "_imagem' src='" +
-          esc(p.imagem) +
-          "' class='clicavel' title='Clique para excluir a imagem' onclick='DeletarImagem(" +
-          id +
-          ")'>";
-      } else {
-        html +=
-          "<label for='" +
-          id +
-          "_imagem' title='Clique para escolher uma imagem'>";
-        html += "<img id='" + id + "_preview' style='display:none;'>";
-        html += "<span class='ph'>Imagem</span>";
-        html += "</label>";
-        html +=
-          "<input type='file' id='" +
-          id +
-          "_imagem' name='" +
-          id +
-          "_imagem' accept='image/*' style='display:none;' onchange='PreVisualizarImagem(" +
-          id +
-          ")'>";
-      }
-      html += "</div>";
-      html += "<span class='id-num'>" + id + "</span>";
-      html +=
-        "<input type='hidden' id='" + id + "_id' value='" + esc(id) + "'>";
-      html += "</div>";
-
-      // campos
       campos.forEach(([chave, rotulo, tipo]) => {
+        const desab = chave === "id" ? "disabled" : "";
         html += "<span class='rotulo'>" + rotulo + "</span>";
         html +=
           "<input type='" +
@@ -224,10 +189,33 @@ function listRecords(data) {
           chave +
           "' value='" +
           esc(p[chave]) +
-          "' class='box-shadow-hover'>";
+          "' class='box-shadow-hover' " +
+          desab +
+          ">";
       });
-
-      // ações (sem o botão de imagem)
+      html += "<div class='campo-imagem'>";
+      if (p.imagem) {
+        html += "<img id='" + id + "_imagem' src='" + esc(p.imagem) + "'>";
+        html +=
+          "<input type='button' class='btn zoom box-shadow-hover' value='Excluir imagem' onclick='DeletarImagem(" +
+          id +
+          ")'>";
+      } else {
+        html += "<img id='" + id + "_preview' style='display:none;'>";
+        html +=
+          "<label for='" +
+          id +
+          "_imagem' class='btn zoom box-shadow-hover'>Imagem</label>";
+        html +=
+          "<input type='file' id='" +
+          id +
+          "_imagem' name='" +
+          id +
+          "_imagem' accept='image/*' onchange='PreVisualizarImagem(" +
+          id +
+          ")'>";
+      }
+      html += "</div>";
       html += "<div class='acoes'>";
       html +=
         "<input type='button' class='btn zoom box-shadow-hover' value='SALVAR' onclick='AtualizarPessoa(" +
