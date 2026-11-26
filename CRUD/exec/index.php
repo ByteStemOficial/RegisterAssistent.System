@@ -6,7 +6,7 @@
     $GLOBALS["msg"] = '';
     $conn = null;
 
-    $host = "srv804.hstgr.io";
+    $host = "localhost";
     $user = "u286479776_user";
     $pass = "rXWhqKUYvLwf4Ng";
     $dbname = "u286479776_RA";
