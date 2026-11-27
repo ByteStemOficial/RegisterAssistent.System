@@ -154,7 +154,7 @@ td {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  height: 60vh;
+  height: 77vh;
   margin-top: 10px;
   border: 1px solid #000;
   border-radius: 0.5em;
@@ -297,4 +297,8 @@ td {
 
 .card-pessoa .thumb label {
   padding: 0 !important;
+}
+
+#conteudo_sob {
+  height: 18%;
 }
