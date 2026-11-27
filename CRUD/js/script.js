@@ -111,7 +111,7 @@ function execRecord(obj, functionAux) {
 
 function ajaxReq(valueData, functionAux) {
   $.ajax({
-    url: "/CRUD/exec/index.php",
+    url: "exec/",
     data: valueData,
     dataType: "json",
     mimeType: "ISO-8859-1",
